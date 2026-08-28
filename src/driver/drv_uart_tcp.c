@@ -194,6 +194,11 @@ void UART_TCP_TRX_Thread()
 
 	while(1)
 	{
+#if PLATFORM_BL602
+		static int wdi_toggle = 0;
+		wdi_toggle = !wdi_toggle;
+		HAL_PIN_SetOutputValue(14, wdi_toggle);
+#endif
 		struct sockaddr_storage source_addr;
 		socklen_t addr_len = sizeof(source_addr);
 		client_sock = accept(listen_sock, (struct sockaddr*)&source_addr, &addr_len);
@@ -305,6 +310,9 @@ void UART_TCP_Init()
 	g_conn_channel = Tokenizer_GetArgIntegerDefault(3, -1);
 	int flowcontrol = Tokenizer_GetArgIntegerDefault(4, 0);
 
+#if PLATFORM_BL602
+	HAL_PIN_Setup_Output(14);
+#endif
 	UART_InitUART(g_baudRate, 0, flowcontrol > 0 ? true : false);
 	UART_InitReceiveRingBuffer(buf_size * 2);
 
