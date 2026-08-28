@@ -42,9 +42,18 @@ void UART_TCP_TRX_Thread(void* arg)
 	if(listen_sock != INVALID_SOCK) close(listen_sock);
 	if(client_sock != INVALID_SOCK) close(client_sock);
 
-	while(!Main_HasWiFiConnected())
+	// Wait for WiFi connection before opening socket (max 30 seconds)
 	{
-		rtos_delay_milliseconds(100);
+		int wait_count = 0;
+		while(!Main_HasWiFiConnected() && g_utcp_running && wait_count < 300)
+		{
+			rtos_delay_milliseconds(100);
+			wait_count++;
+		}
+		if(!Main_HasWiFiConnected())
+		{
+			goto exit_thread;
+		}
 	}
 
 	listen_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);

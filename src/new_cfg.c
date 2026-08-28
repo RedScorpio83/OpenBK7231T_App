@@ -316,8 +316,8 @@ void CFG_SetOpenAccessPoint() {
 	if(g_cfg.wifi_ssid[0] == 0 && g_cfg.wifi_pass[0] == 0) {
 		return;
 	}
-	strcpy_safe(g_cfg.wifi_ssid, "lab4", sizeof(g_cfg.wifi_ssid));
-	strcpy_safe(g_cfg.wifi_pass, "qqwe7799rm5974", sizeof(g_cfg.wifi_pass));
+	g_cfg.wifi_ssid[0] = 0;
+	g_cfg.wifi_pass[0] = 0;
 	// mark as dirty (value has changed)
 	g_cfg_pendingChanges++;
 }

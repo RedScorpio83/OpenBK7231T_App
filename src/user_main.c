@@ -1468,6 +1468,11 @@ void Main_Init_BeforeDelay_Unsafe(bool bAutoRunScripts) {
 	PIN_SetupPins();
 	QuickTick_StartThread();
 
+#if ENABLE_DRIVER_UART_TCP
+	// Auto-start UartTCP bridge - thread waits for WiFi internally
+	CMD_ExecuteCommand("startDriver UartTCP 2400 1024", 0);
+#endif
+
 #if ENABLE_LED_BASIC
 	NewLED_RestoreSavedStateIfNeeded();
 #endif
