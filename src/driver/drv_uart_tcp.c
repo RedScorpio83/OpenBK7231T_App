@@ -39,15 +39,12 @@ void UART_TCP_TRX_Thread(void* arg)
 		.sin_port = htons(DEFAULT_UART_TCP_PORT),
 	};
 
-	ADDLOG_INFO(LOG_FEATURE_DRV, "UART TCP Single-Thread Bridge starting on port %d", DEFAULT_UART_TCP_PORT);
-
 	if(listen_sock != INVALID_SOCK) close(listen_sock);
 	if(client_sock != INVALID_SOCK) close(client_sock);
 
 	listen_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if(listen_sock < 0)
 	{
-		ADDLOG_ERROR(LOG_FEATURE_DRV, "UART TCP Unable to create listen socket");
 		goto exit_thread;
 	}
 
@@ -57,18 +54,15 @@ void UART_TCP_TRX_Thread(void* arg)
 
 	if(bind(listen_sock, (struct sockaddr*)&server_addr, sizeof(server_addr)) != 0)
 	{
-		ADDLOG_ERROR(LOG_FEATURE_DRV, "UART TCP bind failed");
 		goto exit_thread;
 	}
 
 	if(listen(listen_sock, 2) != 0)
 	{
-		ADDLOG_ERROR(LOG_FEATURE_DRV, "UART TCP listen failed");
 		goto exit_thread;
 	}
 
 	g_utcp_running = true;
-	ADDLOG_INFO(LOG_FEATURE_DRV, "UART TCP Listening on port %d", DEFAULT_UART_TCP_PORT);
 
 	while(g_utcp_running)
 	{
@@ -86,7 +80,6 @@ void UART_TCP_TRX_Thread(void* arg)
 				setsockopt(client_sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&nodelay, sizeof(nodelay));
 
 				if(g_conn_channel >= 0) CHANNEL_Set(g_conn_channel, 1, CHANNEL_SET_FLAG_SKIP_MQTT | CHANNEL_SET_FLAG_SILENT);
-				ADDLOG_INFO(LOG_FEATURE_DRV, "UART TCP Client connected!");
 			}
 		}
 
@@ -103,19 +96,11 @@ void UART_TCP_TRX_Thread(void* arg)
 					UART_SendByte(rx_buf[i]);
 				}
 			}
-			else if(r == 0)
-			{
-				ADDLOG_INFO(LOG_FEATURE_DRV, "UART TCP Client disconnected gracefully");
-				close(client_sock);
-				client_sock = INVALID_SOCK;
-				if(g_conn_channel >= 0) CHANNEL_Set(g_conn_channel, 0, CHANNEL_SET_FLAG_SKIP_MQTT | CHANNEL_SET_FLAG_SILENT);
-			}
 			else if(r < 0)
 			{
 				int err = errno;
 				if(err != 0 && err != EAGAIN && err != EWOULDBLOCK && err != EINTR)
 				{
-					ADDLOG_INFO(LOG_FEATURE_DRV, "UART TCP Client error %d", err);
 					close(client_sock);
 					client_sock = INVALID_SOCK;
 					if(g_conn_channel >= 0) CHANNEL_Set(g_conn_channel, 0, CHANNEL_SET_FLAG_SKIP_MQTT | CHANNEL_SET_FLAG_SILENT);
@@ -150,8 +135,8 @@ void UART_TCP_TRX_Thread(void* arg)
 			}
 		}
 
-		// Yield 5ms
-		rtos_delay_milliseconds(5);
+		// Yield 10ms
+		rtos_delay_milliseconds(10);
 	}
 
 exit_thread:
@@ -181,10 +166,6 @@ void UART_TCP_Init()
 		(beken_thread_function_t)UART_TCP_TRX_Thread,
 		2048,
 		(beken_thread_arg_t)0);
-	if(err != kNoErr)
-	{
-		ADDLOG_ERROR(LOG_FEATURE_DRV, "create UART_TCP_TRX failed with %i!", err);
-	}
 }
 
 void UART_TCP_Deinit()
