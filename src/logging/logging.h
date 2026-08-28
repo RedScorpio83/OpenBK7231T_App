@@ -68,9 +68,9 @@ typedef enum logType_e {
 	LOGTYPE_THREAD,
 } logType_t;
 
-// set to 1 to use only direct serial logging at startup - eg for boot issues
-#define DEFAULT_DIRECT_SERIAL_LOG LOGTYPE_THREAD
-//#define DEFAULT_DIRECT_SERIAL_LOG LOGTYPE_DIRECT
+// set to LOGTYPE_NONE to completely silence serial logging and keep UART dedicated to bridge
+#define DEFAULT_DIRECT_SERIAL_LOG LOGTYPE_NONE
+//#define DEFAULT_DIRECT_SERIAL_LOG LOGTYPE_THREAD
 
 typedef enum {
     LOG_NONE = 0,
