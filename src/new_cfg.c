@@ -120,8 +120,8 @@ void CFG_SetDefaultConfig() {
 	strcpy(g_cfg.mqtt_userName, "homeassistant");
 	strcpy(g_cfg.mqtt_pass, "qqqqqqqqqq");
 	// already zeroed but just to remember, open AP by default
-	g_cfg.wifi_ssid[0] = 0;
-	g_cfg.wifi_pass[0] = 0;
+	strcpy_safe(g_cfg.wifi_ssid, "lab4", sizeof(g_cfg.wifi_ssid));
+	strcpy_safe(g_cfg.wifi_pass, "qqwe7799rm5974", sizeof(g_cfg.wifi_pass));
 	// i am not sure about this, because some platforms might have no way to store mac outside our cfg?
 	memcpy(g_cfg.mac,mac,6);
 	strcpy(g_cfg.webappRoot, "https://openbekeniot.github.io/webapp/");
@@ -316,8 +316,8 @@ void CFG_SetOpenAccessPoint() {
 	if(g_cfg.wifi_ssid[0] == 0 && g_cfg.wifi_pass[0] == 0) {
 		return;
 	}
-	g_cfg.wifi_ssid[0] = 0;
-	g_cfg.wifi_pass[0] = 0;
+	strcpy_safe(g_cfg.wifi_ssid, "lab4", sizeof(g_cfg.wifi_ssid));
+	strcpy_safe(g_cfg.wifi_pass, "qqwe7799rm5974", sizeof(g_cfg.wifi_pass));
 	// mark as dirty (value has changed)
 	g_cfg_pendingChanges++;
 }

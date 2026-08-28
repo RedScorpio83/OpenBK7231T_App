@@ -18,16 +18,13 @@ int fd_console = -1;
 
 static void console_cb_read(int fd, void* param)
 {
-	char buffer[64];
-	int ret;
-	int i;
-
-	ret = aos_read(fd, buffer, sizeof(buffer));
+	char buffer[128];
+	int ret = aos_read(fd, buffer, sizeof(buffer));
 	if(ret > 0)
 	{
-		for(i = 0; i < ret; i++)
+		for(int i = 0; i < ret; i++)
 		{
-			UART_AppendByteToReceiveRingBuffer(buffer[i]);
+			UART_AppendByteToReceiveRingBuffer((byte)buffer[i]);
 		}
 	}
 }
