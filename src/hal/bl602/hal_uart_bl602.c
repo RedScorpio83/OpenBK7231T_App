@@ -54,9 +54,12 @@ int HAL_UART_Init(int baud, int parity, bool hwflowc, int txOverride, int rxOver
 		}
 		if(fd_console >= 0)
 		{
-			aos_ioctl(fd_console, IOCTL_UART_IOC_BAUD_MODE, baud);
 			aos_poll_read_fd(fd_console, console_cb_read, (void*)0x12345678);
 		}
+	}
+	if(fd_console >= 0)
+	{
+		aos_ioctl(fd_console, IOCTL_UART_IOC_BAUD_MODE, baud);
 	}
 	return 1;
 }
