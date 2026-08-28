@@ -80,11 +80,8 @@ void UART_TCP_TRX_Thread(void* arg)
 			client_sock = accept(listen_sock, (struct sockaddr*)&source_addr, &addr_len);
 			if(client_sock != INVALID_SOCK)
 			{
-				struct timeval tv;
-				tv.tv_sec = 0;
-				tv.tv_usec = 10000; // 10ms timeout
-				setsockopt(client_sock, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof(tv));
-				setsockopt(client_sock, SOL_SOCKET, SO_SNDTIMEO, (const char*)&tv, sizeof(tv));
+				int c_flags = fcntl(client_sock, F_GETFL, 0);
+				fcntl(client_sock, F_SETFL, c_flags | O_NONBLOCK);
 				int nodelay = 1;
 				setsockopt(client_sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&nodelay, sizeof(nodelay));
 
@@ -113,7 +110,7 @@ void UART_TCP_TRX_Thread(void* arg)
 				client_sock = INVALID_SOCK;
 				if(g_conn_channel >= 0) CHANNEL_Set(g_conn_channel, 0, CHANNEL_SET_FLAG_SKIP_MQTT | CHANNEL_SET_FLAG_SILENT);
 			}
-			else
+			else if(r < 0)
 			{
 				int err = errno;
 				if(err != 0 && err != EAGAIN && err != EWOULDBLOCK && err != EINTR)
