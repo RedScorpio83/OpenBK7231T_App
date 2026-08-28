@@ -17,14 +17,14 @@
 #define UTCP_DEBUG				0
 #endif
 #if UTCP_DEBUG
-#define STACK_SIZE				8192
+#define STACK_SIZE				4096
 #else
-#define STACK_SIZE				3584
+#define STACK_SIZE				1536
 #endif
 extern int Main_HasWiFiConnected();
 static uint16_t buf_size = DEFAULT_BUF_SIZE;
 static int g_conn_channel = -1;
-static int g_baudRate = 115200;
+static int g_baudRate = 2400;
 static int listen_sock = INVALID_SOCK;
 static int client_sock = INVALID_SOCK;
 static xTaskHandle g_start_thread = NULL;
@@ -87,7 +87,7 @@ static void UTCP_TX_Thd(void* param)
 		if(ret <= 0)
 			goto exit;
 
-		rtos_delay_milliseconds(5);
+		rtos_delay_milliseconds(10);
 	}
 
 exit:
@@ -99,7 +99,7 @@ exit:
 static void UTCP_RX_Thd(void* param)
 {
 	int client_fd = *(int*)param;
-	unsigned char buffer[1024];
+	unsigned char buffer[256];
 
 	while(1)
 	{
@@ -138,7 +138,7 @@ static void UTCP_RX_Thd(void* param)
 			goto exit;
 		}
 
-		rtos_delay_milliseconds(5);
+		rtos_delay_milliseconds(10);
 	}
 
 exit:
