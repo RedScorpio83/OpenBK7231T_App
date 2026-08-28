@@ -42,6 +42,11 @@ void UART_TCP_TRX_Thread(void* arg)
 	if(listen_sock != INVALID_SOCK) close(listen_sock);
 	if(client_sock != INVALID_SOCK) close(client_sock);
 
+	while(!Main_HasWiFiConnected())
+	{
+		rtos_delay_milliseconds(100);
+	}
+
 	listen_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if(listen_sock < 0)
 	{

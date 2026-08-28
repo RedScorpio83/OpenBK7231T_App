@@ -1609,9 +1609,6 @@ void Main_Init_After_Delay()
 #endif		
 		HTTPServer_Start();
 		ADDLOGF_DEBUG("Started http tcp server");
-#if ENABLE_DRIVER_UART_TCP
-	CMD_ExecuteCommand("startDriver UartTCP 2400 1024", 0);
-#endif
 #if MQTT_USE_TLS
 	} 
 #endif		
