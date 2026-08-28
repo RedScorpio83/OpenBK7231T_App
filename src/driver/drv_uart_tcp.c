@@ -96,6 +96,13 @@ void UART_TCP_TRX_Thread(void* arg)
 					UART_SendByte(rx_buf[i]);
 				}
 			}
+			else if(r == 0)
+			{
+				// Client disconnected gracefully (FIN packet received)
+				close(client_sock);
+				client_sock = INVALID_SOCK;
+				if(g_conn_channel >= 0) CHANNEL_Set(g_conn_channel, 0, CHANNEL_SET_FLAG_SKIP_MQTT | CHANNEL_SET_FLAG_SILENT);
+			}
 			else if(r < 0)
 			{
 				int err = errno;
