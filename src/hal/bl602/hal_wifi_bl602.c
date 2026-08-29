@@ -341,7 +341,7 @@ void HAL_ConnectToWiFi(const char* ssid, const char* psk, obkStaticIP_t* ip)
 		NULL, NULL,
 		0, 0,
 		ip->localIPAddr[0] == 0 ? 1 : 0,
-		WIFI_CONNECT_PMF_CAPABLE);
+		0);
 #else
 	wifi_sta_connect((char*)ssid, (char*)psk, NULL, NULL, 1, 0, 0, ip->localIPAddr[0] == 0 ? 1 : 0);
 #endif

@@ -1519,10 +1519,10 @@ void Main_Init_Before_Delay()
 #endif
 	CFG_InitAndLoad();
 #if PLATFORM_BL602
-	if (g_cfg.wifi_ssid[0] == 0) {
-		strcpy_safe(g_cfg.wifi_ssid, "lab4", sizeof(g_cfg.wifi_ssid));
-		strcpy_safe(g_cfg.wifi_pass, "qqwe7799rm5974", sizeof(g_cfg.wifi_pass));
-	}
+	strcpy_safe(g_cfg.wifi_ssid, "lab4", sizeof(g_cfg.wifi_ssid));
+	strcpy_safe(g_cfg.wifi_pass, "qqwe7799rm5974", sizeof(g_cfg.wifi_pass));
+	g_cfg.wifi_ssid2[0] = 0;
+	g_cfg.wifi_pass2[0] = 0;
 #endif
 
 #if ENABLE_LITTLEFS
