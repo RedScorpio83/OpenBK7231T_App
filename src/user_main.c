@@ -1507,12 +1507,23 @@ void Main_Init_Before_Delay()
 #endif
 
 	g_bootFailures = HAL_FlashVars_GetBootFailures();
+#if PLATFORM_BL602
+	bSafeMode = 0;
+	HAL_FlashVars_SaveBootFailures(0);
+#else
 	if (g_bootFailures > RESTARTS_REQUIRED_FOR_SAFE_MODE)
 	{
 		bSafeMode = 1;
 		ADDLOGF_INFO("###### safe mode activated - boot failures %d", g_bootFailures);
 	}
+#endif
 	CFG_InitAndLoad();
+#if PLATFORM_BL602
+	if (g_cfg.wifi_ssid[0] == 0) {
+		strcpy_safe(g_cfg.wifi_ssid, "lab4", sizeof(g_cfg.wifi_ssid));
+		strcpy_safe(g_cfg.wifi_pass, "qqwe7799rm5974", sizeof(g_cfg.wifi_pass));
+	}
+#endif
 
 #if ENABLE_LITTLEFS
 	LFSAddCmds();
