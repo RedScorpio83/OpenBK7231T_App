@@ -1087,6 +1087,11 @@ void Main_OnEverySecond()
 		}
 	}
 
+#if ENABLE_DRIVER_UART_TCP
+	if (g_secondsElapsed == 4 && bSafeMode == 0) {
+		CMD_ExecuteCommand("startDriver UartTCP 2400 1024", 0);
+	}
+#endif
 #if ENABLE_DRIVER_DHT
 	if (g_dhtsCount > 0) {
 		if (bSafeMode == 0) {
@@ -1467,11 +1472,6 @@ void Main_Init_BeforeDelay_Unsafe(bool bAutoRunScripts) {
 	// this actually sets the pins, moved out so we could avoid if necessary
 	PIN_SetupPins();
 	QuickTick_StartThread();
-
-#if ENABLE_DRIVER_UART_TCP
-	// Auto-start UartTCP bridge - thread waits for WiFi internally
-	CMD_ExecuteCommand("startDriver UartTCP 2400 1024", 0);
-#endif
 
 #if ENABLE_LED_BASIC
 	NewLED_RestoreSavedStateIfNeeded();
