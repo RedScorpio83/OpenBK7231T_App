@@ -1509,7 +1509,7 @@ void Main_Init_Before_Delay()
 	g_bootFailures = HAL_FlashVars_GetBootFailures();
 #if PLATFORM_BL602
 	bSafeMode = 0;
-	HAL_FlashVars_SaveBootFailures(0);
+	HAL_FlashVars_SaveBootComplete();
 #else
 	if (g_bootFailures > RESTARTS_REQUIRED_FOR_SAFE_MODE)
 	{
